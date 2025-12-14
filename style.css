@@ -347,6 +347,17 @@ body {
   body {
     padding: 24px 16px;
   }
+
+  /* Rotate video to vertical */
+  .background-video {
+    transform: rotate(90deg);
+    width: 100vh;
+    height: 100vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
   .bento-container {
     display: flex;
     flex-direction: column;
