@@ -1,0 +1,58 @@
+[
+  {
+    "id": "profile",
+    "type": "profile",
+    "title": "Mattia Capomagi",
+    "subtitle": "Graphic Designer & Creative Director",
+    "description": "Crafting bold visual identities, branding systems, and digital experiences that stand out.<br><strong>📍 Rome, Italy</strong> — Open for collaborations worldwide.",
+    "image": "favicon.jpg",
+    "url": "#",
+    "colSpan": 4,
+    "rowSpan": 2,
+    "themeColor": "#333"
+  },
+  {
+    "id": "portfolio",
+    "type": "project",
+    "title": "Portfolio",
+    "subtitle": "mattiacapomagi.it",
+    "image": "",
+    "url": "https://mattiacapomagi.it",
+    "colSpan": 2,
+    "rowSpan": 2,
+    "themeColor": "#FF5733"
+  },
+  {
+    "id": "linkedin",
+    "type": "social",
+    "title": "LinkedIn",
+    "subtitle": "Let's Connect",
+    "image": "",
+    "url": "https://www.linkedin.com/in/mattiacapomagi/",
+    "colSpan": 2,
+    "rowSpan": 1,
+    "themeColor": "#0077b5"
+  },
+  {
+    "id": "instagram",
+    "type": "social",
+    "title": "Instagram",
+    "subtitle": "Visual Portfolio",
+    "image": "",
+    "url": "https://instagram.com/mattiacapomagi",
+    "colSpan": 1,
+    "rowSpan": 1,
+    "themeColor": "#E1306C"
+  },
+  {
+    "id": "gumroad",
+    "type": "project",
+    "title": "Gumroad",
+    "subtitle": "Design Resources",
+    "image": "",
+    "url": "https://mattiacapomagi.gumroad.com/",
+    "colSpan": 1,
+    "rowSpan": 1,
+    "themeColor": "#ff90e8"
+  }
+]

@@ -1,0 +1,382 @@
+/* FONT FACES */
+@font-face {
+  font-family: "PP Mori";
+  src: url("font/PPMori-Regular.woff2") format("woff2"),
+    url("font/PPMori-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Mori";
+  src: url("font/PPMori-Extrabold.woff2") format("woff2"),
+    url("font/PPMori-Extrabold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Colors */
+  --text-main: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, 0.65);
+
+  /* Variables */
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(255, 255, 255, 0.8);
+  --grid-gap: 24px;
+  --card-padding: 32px;
+
+  /* Radius & Effects */
+  --radius-lg: 48px;
+  --blur-strength: 40px;
+  --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 60px -10px rgba(0, 0, 0, 0.12);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  background: #ffffff; /* Fallback */
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: "PP Mori", sans-serif;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: transparent !important;
+  perspective: 3000px;
+}
+
+/* BACKGROUND STACK */
+.background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -100;
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -90;
+  opacity: 0.15; /* visible but subtle */
+  /* High frequency noise for "fine" look, numOctaves 1 for raw/dithered feel */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* CONTAINER */
+.bento-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 180px; /* Larger rows */
+  gap: var(--grid-gap);
+  width: 100%;
+  max-width: 1200px; /* Wider container */
+}
+
+/* CARDS - EMBOSSED STYLE */
+.card {
+  /* Slightly tinted transparent base */
+  background: rgba(255, 255, 255, 0.1);
+
+  /* Soft blur */
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+
+  /* Embossed border effect: darker bottom-right, lighter top-left */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-top-color: rgba(255, 255, 255, 0.25);
+  border-left-color: rgba(255, 255, 255, 0.25);
+  border-right-color: rgba(0, 0, 0, 0.1);
+  border-bottom-color: rgba(0, 0, 0, 0.15);
+
+  /* Squircle */
+  border-radius: var(--radius-lg);
+
+  padding: var(--card-padding);
+  text-decoration: none;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  /* EMBOSSED Shadows: Inset shadows create "pressed in" look */
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.15),
+    /* Top-left inner shadow */ inset -2px -2px 6px rgba(255, 255, 255, 0.1),
+    /* Bottom-right inner highlight */ 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle drop for edge definition */
+
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* No specular highlight for embossed look */
+.card::before {
+  display: none;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.1),
+    inset -1px -1px 4px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card:active {
+  box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.05);
+}
+
+/* PORTFOLIO IFRAME */
+.card-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%; /* Scale down for preview */
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  border: none;
+  pointer-events: none; /* Non-interactive, just a preview */
+  border-radius: var(--radius-lg);
+  z-index: 0;
+}
+
+/* Card content - no 3D transform needed */
+.card-content,
+.card-icon,
+.card-title,
+.card-subtitle {
+  position: relative;
+  z-index: 2;
+}
+
+/* TITLES / TEXT */
+.card-content {
+  z-index: 2;
+  width: 100%;
+}
+.card-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0em;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.card-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.card-description {
+  font-size: 0.95rem;
+  margin-top: 16px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+/* PROFILE (Top Full Width) */
+.card[data-id="profile"] {
+  grid-column: span 4;
+  grid-row: span 2;
+  padding: 32px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  gap: 48px;
+}
+.card[data-id="profile"] .card-icon {
+  width: 296px;
+  height: 296px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+}
+.card[data-id="profile"] .card-title {
+  font-size: 3.8rem;
+  margin-bottom: 16px;
+}
+.card[data-id="profile"] .card-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: var(--text-muted);
+}
+.card[data-id="profile"] .card-description {
+  max-width: 600px;
+  margin-top: 0;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+.card[data-id="profile"] .card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* PORTFOLIO - Centered Text */
+.card[data-id="portfolio"] {
+  grid-column: span 2;
+  grid-row: span 2;
+  padding: var(--card-padding);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.card[data-id="portfolio"] .card-title {
+  font-size: 4rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.05em;
+}
+.card[data-id="portfolio"] .card-subtitle {
+  font-size: 1.4rem !important;
+  margin-top: 12px;
+}
+.card-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.card:hover .card-bg-image {
+  transform: scale(1.05);
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 32px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  color: white;
+}
+
+/* LINKEDIN (Bottom Right - Top) */
+.card[data-id="linkedin"] {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+/* IG & GUMROAD (Bottom Right - Split) */
+.card[data-id="instagram"],
+.card[data-id="gumroad"] {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+/* Ensure no icons for these, just BIG text */
+.card:not([data-id="profile"]) .card-icon {
+  display: none;
+}
+
+/* CLOCK */
+.card-clock {
+  font-family: "PP Mori", monospace;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-left: auto;
+  letter-spacing: -0.05em;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+  .bento-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 160px;
+    max-width: 700px;
+  }
+  .card[data-id="profile"] {
+    grid-column: span 2;
+    padding: 28px;
+    gap: 32px;
+  }
+  .card[data-id="profile"] .card-icon {
+    width: 200px;
+    height: 200px;
+  }
+  .card[data-id="profile"] .card-title {
+    font-size: 2.8rem;
+  }
+  .card[data-id="profile"] .card-subtitle {
+    font-size: 1.2rem;
+  }
+  .card[data-id="profile"] .card-description {
+    font-size: 1.1rem;
+  }
+  .card[data-id="portfolio"] {
+    grid-column: span 2;
+  }
+  .card[data-id="linkedin"] {
+    grid-column: span 2;
+  }
+  .card-title {
+    font-size: 1.8rem;
+  }
+  .card-subtitle {
+    font-size: 1rem;
+  }
+  .card[data-id="portfolio"] .card-title {
+    font-size: 3rem !important;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 650px) {
+  body {
+    padding: 24px 16px;
+  }
+  .bento-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card {
+    min-height: 120px;
+    padding: 24px;
+  }
+  .card[data-id="profile"] {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    padding: 24px;
+  }
+  .card[data-id="profile"] .card-icon {
+    width: 140px;
+    height: 140px;
+    border-radius: var(--radius-lg); /* Keep squircle */
+  }
+  .card[data-id="profile"] .card-title {
+    font-size: 2rem;
+  }
+  .card[data-id="profile"] .card-subtitle {
+    font-size: 1rem;
+  }
+  .card[data-id="profile"] .card-description {
+    font-size: 1rem;
+  }
+  .card[data-id="portfolio"] .card-title {
+    font-size: 2.5rem !important;
+  }
+}
